@@ -5,7 +5,7 @@ class COOLError:
         self.body = body
 
     def __str__(self):
-        return f'{self.pos} - {self.name}: {self.body}'
+        return '(%d, %d) - %s: %s' % (self.pos[0], self.pos[1], self.name, self.body)
 
     __repr__ = __str__
 
