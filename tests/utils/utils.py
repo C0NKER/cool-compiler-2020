@@ -10,10 +10,10 @@ BAD_ERROR_FORMAT = '''El error no esta en formato: (<línea>,<columna>) - <tipo_
 UNEXPECTED_ERROR = 'Se esperaba un %s en (%d, %d). Su error fue un %s en (%d, %d)'
 
 # ERROR_FORMAT = r'^\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)\s*-\s*(\w+)\s*:(.*)$'
-ERROR_FORMAT = r'^\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)\s*-\s*(\w+)\s*:(.*)(\n*)'
+ERROR_FORMAT = r'^\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)\s*-\s*(\w+)\s*:(.*)'
 
 def parse_error(error: str):
-    merror = re.fullmatch(ERROR_FORMAT, error)
+    merror = re.match(ERROR_FORMAT, error)
     print(error)
     print(merror)
     assert merror, BAD_ERROR_FORMAT
