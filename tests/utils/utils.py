@@ -12,13 +12,19 @@ UNEXPECTED_ERROR = 'Se esperaba un %s en (%d, %d). Su error fue un %s en (%d, %d
 # ERROR_FORMAT = r'^\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)\s*-\s*(\w+)\s*:(.*)$'
 ERROR_FORMAT = r'^\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)\s*-\s*(\w+)\s*:(.*)'
 
-def parse_error(error: str):
-    merror = re.match(ERROR_FORMAT, error)
-    print(error)
-    print(merror)
-    assert merror, BAD_ERROR_FORMAT
 
-    return (t(x) for t, x in zip([int, int, str, str], merror.groups()))
+remove_ws= lambda s: ''.join(c for c in s if c != ' ')
+
+def parse_error(error: str):
+    try:
+        pos, tail = error.split('-', 1)
+        pos = remove_ws(pos)[1:-1].split(',', 1)
+        pos = int(pos[0]), int(pos[1])
+        errortype, razon = tail.split(':', 1)
+        errortype = remove_ws(errortype)
+        return pos[0], pos[1], errortype, razon
+    except Exception as ex:
+        assert False, BAD_ERROR_FORMAT
 
 
 def first_error(compiler_output: list, errors: list):
