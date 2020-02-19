@@ -9,13 +9,18 @@ BAD_ERROR_FORMAT = '''El error no esta en formato: (<línea>,<columna>) - <tipo_
                         o no se encuentra en la 3ra linea'''
 UNEXPECTED_ERROR = 'Se esperaba un %s en (%d, %d). Su error fue un %s en (%d, %d)'
 
-# ERROR_FORMAT = r'^\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)\s*-\s*(\w+)\s*:(.*)$'
-ERROR_FORMAT = r'^\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)\s*-\s*(\w+)\s*:(.*)'
+ERROR_FORMAT = r'^\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)\s*-\s*(\w+)\s*:(.*)$'
+
+def parse_error(error: str):
+    merror = re.fullmatch(ERROR_FORMAT, error)
+    assert merror, BAD_ERROR_FORMAT
+
+    return (t(x) for t, x in zip([int, int, str, str], merror.groups()))
 
 
 remove_ws= lambda s: ''.join(c for c in s if c != ' ')
 
-def parse_error(error: str):
+def parse_error2(error: str):
     try:
         pos, tail = error.split('-', 1)
         pos = remove_ws(pos)[1:-1].split(',', 1)
@@ -24,6 +29,7 @@ def parse_error(error: str):
         errortype = remove_ws(errortype)
         return pos[0], pos[1], errortype, razon
     except Exception as ex:
+        print(ex)
         assert False, BAD_ERROR_FORMAT
 
 
