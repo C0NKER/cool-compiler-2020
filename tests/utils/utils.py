@@ -21,7 +21,6 @@ def parse_error2(error: str):
 remove_ws= lambda s: ''.join(c for c in s if c != ' ')
 
 def parse_error(error: str):
-    print([error])
     try:
         pos, tail = error.split('-', 1)
         pos = remove_ws(pos)[1:-1].split(',', 1)
@@ -35,8 +34,10 @@ def parse_error(error: str):
 
 
 def first_error(compiler_output: list, errors: list):
+    print('Errores esperados:', errors)
     line, column, error_type, _ = parse_error(errors[0])
 
+    print('Salida del compilador:', compiler_output)
     oline, ocolumn, oerror_type, _ = parse_error(compiler_output[0])
 
     assert line == oline and column == ocolumn and error_type == oerror_type,\
@@ -56,6 +57,7 @@ def compare_errors(compiler_path: str, cool_file_path: str, error_file_path: str
     except TimeoutError:
         assert False, COMPILER_TIMEOUT
 
+    print('Salida completa del Compilador', output)
     compiler_output = output.split('\n')
 
     if error_file_path:
