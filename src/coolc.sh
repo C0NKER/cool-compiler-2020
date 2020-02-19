@@ -9,5 +9,4 @@ echo "Copyright (c) 2019: Nombre1, Nombre2, Nombre3"    # TODO: líneas a los va
 
 # Llamar al compilador
 python CoolCompiler.py $INPUT_FILE
-echo "La salida del $INPUT_FILE no se esta capturando"
 # Todo: Semantic

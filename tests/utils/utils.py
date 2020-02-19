@@ -11,33 +11,16 @@ UNEXPECTED_ERROR = 'Se esperaba un %s en (%d, %d). Su error fue un %s en (%d, %d
 
 ERROR_FORMAT = r'^\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)\s*-\s*(\w+)\s*:(.*)$'
 
-def parse_error2(error: str):
+def parse_error(error: str):
     merror = re.fullmatch(ERROR_FORMAT, error)
     assert merror, BAD_ERROR_FORMAT
 
     return (t(x) for t, x in zip([int, int, str, str], merror.groups()))
 
 
-remove_ws= lambda s: ''.join(c for c in s if c != ' ')
-
-def parse_error(error: str):
-    try:
-        pos, tail = error.split('-', 1)
-        pos = remove_ws(pos)[1:-1].split(',', 1)
-        pos = int(pos[0]), int(pos[1])
-        errortype, razon = tail.split(':', 1)
-        errortype = remove_ws(errortype)
-        return pos[0], pos[1], errortype, razon
-    except Exception as ex:
-        print(ex)
-        assert False, BAD_ERROR_FORMAT
-
-
 def first_error(compiler_output: list, errors: list):
-    print('Errores esperados:', errors)
     line, column, error_type, _ = parse_error(errors[0])
 
-    print('Salida del compilador:', compiler_output)
     oline, ocolumn, oerror_type, _ = parse_error(compiler_output[0])
 
     assert line == oline and column == ocolumn and error_type == oerror_type,\
@@ -54,11 +37,9 @@ def compare_errors(compiler_path: str, cool_file_path: str, error_file_path: str
     try:
         sp = subprocess.run(['bash', compiler_path, cool_file_path], capture_output=True, timeout=timeout)
         return_code, output = sp.returncode, sp.stdout.decode()
-        print('Errores: ', sp.stderr.decode())
     except TimeoutError:
         assert False, COMPILER_TIMEOUT
 
-    print('Salida completa del Compilador', output)
     compiler_output = output.split('\n')
 
     if error_file_path:
